@@ -1,0 +1,14 @@
+services:
+  thelounge:
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+    container_name: thelounge-fork
+    ports:
+      - "9000:9000"
+    restart: always
+    volumes:
+      - thelounge:/var/opt/thelounge # uses a named volume
+
+volumes:
+  thelounge:
