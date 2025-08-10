@@ -19,7 +19,7 @@ socket.on("connect", function () {
 	// Clear send buffer when reconnecting, socket.io would emit these
 	// immediately upon connection and it will have no effect, so we ensure
 	// nothing is sent to the server that might have happened.
-	socket.sendBuffer = [];
+	// socket.sendBuffer = [];
 
 	store.commit("currentUserVisibleError", "Finalizing connection…");
 	updateLoadingMessage();
