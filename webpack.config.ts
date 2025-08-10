@@ -1,11 +1,12 @@
 import * as webpack from "webpack";
 import * as path from "path";
+import * as crypto from "crypto";
 import CopyPlugin from "copy-webpack-plugin";
 import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import {VueLoaderPlugin} from "vue-loader";
 import babelConfig from "./babel.config.cjs";
-import Helper from "./server/helper";
+import pkg from "./package.json";
 
 const tsCheckerPlugin = new ForkTsCheckerWebpackPlugin({
 	typescript: {
@@ -149,7 +150,13 @@ const config: webpack.Configuration = {
 							.toString()
 							.replace(
 								"__HASH__",
-								isProduction ? Helper.getVersionCacheBust() : "dev"
+								isProduction
+									? crypto
+											.createHash("sha256")
+											.update(`v${pkg.version}`)
+											.digest("hex")
+											.substring(0, 10)
+									: "dev"
 							);
 					},
 				},
@@ -202,7 +209,7 @@ export default (env: any, argv: any) => {
 			tsCheckerPlugin,
 			vueLoaderPlugin,
 			miniCssExtractPlugin,
-			// Client tests that require Vue may end up requireing socket.io
+			// Client tests that require Vue may end up requiring socket.io
 			new webpack.NormalModuleReplacementPlugin(
 				/js(\/|\\)socket\.js/,
 				path.resolve(__dirname, "scripts/noop.js")
