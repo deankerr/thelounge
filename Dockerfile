@@ -14,6 +14,7 @@ RUN apk --update --no-cache --virtual build-deps add python3 py3-setuptools buil
 # Copy source code
 WORKDIR /app
 COPY package.json yarn.lock ./
+COPY .thelounge_home ./
 COPY server/ server/
 COPY client/ client/
 COPY shared/ shared/

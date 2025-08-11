@@ -1,8 +1,6 @@
 services:
   thelounge:
-    build:
-      context: ../
-      dockerfile: docker/Dockerfile
+    build: .
     container_name: thelounge-fork
     ports:
       - "9000:9000"
