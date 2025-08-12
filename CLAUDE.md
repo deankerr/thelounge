@@ -9,6 +9,7 @@ The Lounge is a self-hosted web IRC client built with Node.js, TypeScript, Vue 3
 ### Architecture
 
 - **Server**: TypeScript-based Node.js server using Express and Socket.IO
+
   - Entry point: `server/index.ts` (imports command-line interface)
   - Main server logic: `server/server.ts`
   - Models: `server/models/` (User, Network, Channel, Message, Prefix)
@@ -16,6 +17,7 @@ The Lounge is a self-hosted web IRC client built with Node.js, TypeScript, Vue 3
   - Command-line tools: `server/command-line/` (user management, installation)
 
 - **Client**: Vue 3 SPA with TypeScript
+
   - Entry point: `client/js/vue.ts`
   - Components: `client/components/` (organized by feature)
   - State management: Vuex store in `client/js/store.ts`
@@ -23,6 +25,7 @@ The Lounge is a self-hosted web IRC client built with Node.js, TypeScript, Vue 3
   - Routing: Vue Router in `client/js/router.ts`
 
 - **Shared**: Common types and utilities in `shared/`
+
   - Type definitions shared between client and server
   - IRC parsing and linkification utilities
 
@@ -34,12 +37,15 @@ The Lounge is a self-hosted web IRC client built with Node.js, TypeScript, Vue 3
 ## Development Commands
 
 ### Initial Setup
+
 The project requires Python 3.12 for building native dependencies (sqlite3). If you have Python 3.13+, use:
+
 ```bash
 PYTHON=/opt/homebrew/bin/python3.12 yarn install
 ```
 
 ### Building
+
 ```bash
 yarn build              # Build both client and server
 yarn build:client       # Build client-side assets with Webpack
@@ -48,15 +54,14 @@ yarn watch              # Watch mode for client development
 ```
 
 ### Development Server
+
 ```bash
 yarn dev                # Start development server with hot reloading
 ```
 
 ### Testing and Linting
+
 ```bash
-yarn test                   # Run all lints and tests
-yarn test:mocha             # Run Mocha test suite only
-yarn test:nospec            # Run tests without spec output
 yarn lint                   # Run all linters (ESLint, Prettier, Stylelint)
 yarn lint:eslint            # Run ESLint only
 yarn lint:prettier          # Check Prettier formatting
@@ -65,30 +70,33 @@ yarn format:prettier        # Auto-fix Prettier formatting
 ```
 
 ### Production
+
 ```bash
 yarn start                  # Start production server
 NODE_ENV=production yarn build  # Production build
 ```
 
 ### Git Hooks
+
 ```bash
 yarn githooks-install      # Install pre-commit hooks
 ```
 
 ## Configuration
 
-- Default configuration: `defaults/config.js` 
+- Default configuration: `defaults/config.js`
 - The Lounge supports both public (no auth) and private (user accounts) modes
 - Configuration is extensively documented with inline comments
 
 ## Docker
 
-The `docker/` directory contains:
-- `Dockerfile`: Official Docker image configuration
-- `docker-compose.yml`: Example compose setup
-- `README.md`: Docker-specific documentation
+The project includes Docker configuration in the root:
 
-The Docker setup uses Node.js 22 Alpine, runs as unprivileged user (node:node), and exposes port 9000.
+- `Dockerfile`: Multi-stage build configuration that builds from source
+- `docker-compose.yml`: Example compose setup
+- `DOCKER.md`: Docker-specific documentation
+
+The Docker setup uses Node.js 22 Alpine, runs as unprivileged user (node:node), and exposes port 9000. The image builds The Lounge from source rather than using the published npm package.
 
 ## Key File Locations
 
@@ -102,10 +110,12 @@ The Docker setup uses Node.js 22 Alpine, runs as unprivileged user (node:node), 
 
 - **SQLite3 + Python 3.13**: The sqlite3 native module fails to build with Python 3.13 due to missing `distutils`. Use Python 3.12 with `PYTHON=/opt/homebrew/bin/python3.12 yarn install`
 - **Build Order**: Server must be compiled before client in some cases due to webpack importing server helper for version cache busting
+- **Test Suite**: The test suite is currently non-functional due to environment setup issues. Many tests fail with timeouts or missing dependencies. Use linting commands only for code quality checks.
 
 ## Plugin System
 
 The Lounge has an extensible plugin architecture:
+
 - IRC event handlers: `server/plugins/irc-events/`
 - Input commands: `server/plugins/inputs/`
 - Authentication providers: `server/plugins/auth/`
@@ -113,4 +123,4 @@ The Lounge has an extensible plugin architecture:
 
 ## Testing
 
-Tests are organized in `test/` with separate subdirectories for client, server, and shared code. The test suite uses Mocha with TypeScript support and runs in Node.js test environment.
+Tests are organized in `test/` with separate subdirectories for client, server, and shared code. The test suite uses Mocha with TypeScript support but is currently non-functional due to environment setup issues.

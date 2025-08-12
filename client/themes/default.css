@@ -33,3 +33,13 @@
 		border-radius: 0;
 	}
 }
+
+/* overrides */
+
+textarea#user-specified-css-input {
+	height: 400px;
+}
+
+#sidebar {
+	width: 180px;
+}

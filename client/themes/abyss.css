@@ -1,0 +1,139 @@
+@import 'morning.css';
+
+:root {
+  --body-bg-color: #000;
+  --body-color-muted: #999;
+
+  --border-color: #333;
+  --window-bg-color: #0c0c0c;
+}
+
+body {
+  font-family: monospace;
+}
+
+.window {
+  border-radius: 0;
+}
+
+#sidebar .logo-container {
+  display: none;
+}
+
+#sidebar .network .collapse-network {
+  padding-left: 0;
+  width: 26px;
+}
+
+#sidebar .channel-list-item {
+  padding: .2em 1em;
+}
+
+#sidebar .channel-list-item:not([data-type=lobby]) {
+  color: var(--body-color-muted);
+}
+
+#sidebar .channel-list-item:not([data-type=lobby]):hover {
+  color: var(--body-color);
+}
+
+#sidebar .channel-list-item.active {
+  font-weight: bold;
+  color: var(--body-color);
+}
+
+/* hide speech bubbles in front of chat names */
+#sidebar .channel-list-item:before {
+  display: none;
+}
+
+#sidebar .channel-list-item.active,
+#sidebar .channel-list-item:hover
+{
+  background: none;
+}
+
+#sidebar {
+  border-right: 1px solid var(--border-color);
+}
+
+#sidebar .channel-list-item .badge {
+  font-weight: bold;
+  font-size: 11px;
+  padding: 2px 6px;
+}
+
+#sidebar .channel-list-item .close {
+  display: none;
+}
+
+/* chat area */
+
+#chat .msg[data-type="monospace_block"] .text {
+  background-color: #060606;
+}
+
+#chat .msg[data-type=notice].highlight .content {
+  color: #48A8FF;
+}
+
+#chat .msg.self .content {
+  color: var(--body-color);
+}
+
+#chat .userlist .count {
+  background: none;
+}
+
+#chat .time,
+#chat .from,
+#chat .content
+{
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+
+#form {
+  background: none;
+  border-color: var(--border-color);
+}
+
+/* settings */
+
+.input {
+  background-color: #222;
+  border-color: #444;
+  color: #fff;
+}
+
+.input::placeholder {
+  color: #555;
+}
+
+/* layout fixes */
+
+#chat button.close, #chat button.mentions, #chat button.menu, #chat button.search, #viewport .lt, #viewport .rt {
+  margin-top: 0;
+}
+
+.header {
+  line-height: 38px;
+  height: 38px;
+}
+
+.header .topic {
+  font-size: 15px;
+}
+
+#footer button {
+  color: var(--body-color-muted);
+}
+
+#footer button:hover, #footer button.active {
+  color: #fff;
+  background: none;
+}
+
+.settings-menu {
+  top: 44px;
+}

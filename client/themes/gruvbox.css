@@ -1,0 +1,447 @@
+/*
+thelounge-theme-gruvbox
+A dark theme for TheLounge IRC client
+
+Installation instructions can be found at https://thelounge.chat/docs/server/configuration.html#theme
+*/
+:root {
+	/* gruvbox */
+	--bg-hard: #1d2021;
+	--bg: #282828;
+	--bg-soft: #32302f;
+	--bg1: #3c3836;
+	--bg2: #504945;
+	--bg3: #665c54;
+	--bg4: #7c6f64;
+	--gray-245: #928374;
+	--gray-244: #928374;
+	--fg-hard: #f9f5d7;
+	--fg: #fbf1c7;
+	--fg-soft: #f2e5bc;
+	--fg1: #ebdbb2;
+	--fg2: #d5c4a1;
+	--fg3: #bdae93;
+	--fg4: #a89984;
+	--bright-red: #fb4934;
+	--bright-green: #b8bb26;
+	--bright-yellow: #fabd2f;
+	--bright-blue: #83a598;
+	--bright-purple: #d3869b;
+	--bright-aqua: #8ec07c;
+	--bright-orange: #fe8019;
+	--neutral-red: #cc241d;
+	--neutral-green: #98971a;
+	--neutral-yellow: #d79921;
+	--neutral-blue: #458588;
+	--neutral-purple: #b16286;
+	--neutral-aqua: #689d6a;
+	--neutral-orange: #d65d0e;
+	--dim-red: #9d0006;
+	--dim-green: #79740e;
+	--dim-yellow: #b57614;
+	--dim-blue: #076678;
+	--dim-purple: #8f3f71;
+	--dim-aqua: #427b58;
+	--dim-orange: #af3a03;
+}
+
+:root {
+	--body-color: var(--fg1);
+	--dim-color: var(--fg3);
+	--link-color: var(--bright-orange);
+	--window-bg-color: var(--bg);
+	--body-bg-color: var(--bg);
+	--active-bg-color: var(--bg1);
+	--dark-bg-color: var(--bg-hard);
+	--date-marker-color: var(--bright-orange);
+	--unread-marker-color: var(--bright-green);
+	--highlight-bg-color: var(--bright-orange);
+	--highlight-border-color: var(--bright-orange);
+	--overlay-bg-color: rgba(0, 0, 0, 0.7);
+	--upload-progressbar-color: var(--bright-orange);
+}
+
+.user.color-1,
+.user.color-17 {
+	color: var(--neutral-red);
+}
+
+.user.color-2,
+.user.color-18 {
+	color: var(--neutral-purple);
+}
+
+.user.color-3,
+.user.color-19 {
+	color: var(--neutral-yellow);
+}
+
+.user.color-4,
+.user.color-20 {
+	color: var(--neutral-blue);
+}
+
+.user.color-5,
+.user.color-21 {
+	color: var(--neutral-green);
+}
+
+.user.color-6,
+.user.color-22 {
+	color: var(--neutral-aqua);
+}
+
+.user.color-7,
+.user.color-23 {
+	color: var(--bright-green);
+}
+
+.user.color-8,
+.user.color-24 {
+	color: var(--bright-purple);
+}
+
+.user.color-9,
+.user.color-25 {
+	color: var(--bright-yellow);
+}
+
+.user.color-10,
+.user.color-26 {
+	color: var(--bright-blue);
+}
+
+.user.color-11,
+.user.color-27 {
+	color: var(--bright-aqua);
+}
+
+.user.color-12,
+.user.color-28 {
+	color: #91a6ff;
+}
+
+.user.color-13,
+.user.color-29 {
+	color: var(--bright-red);
+}
+
+.user.color-14,
+.user.color-30 {
+	color: #076678;
+}
+
+.user.color-15,
+.user.color-31 {
+	color: #bd8d46;
+}
+
+.user.color-16,
+.user.color-32 {
+	color: #499e8d;
+}
+
+html {
+	scrollbar-color: var(--bg1) var(--bg);
+	scrollbar-width: thin;
+}
+
+/* Borders */
+#chat .content,
+#chat .header,
+#chat .user-mode::before,
+#chat .userlist {
+	border-color: var(--window-bg-color);
+}
+
+/* Button colors */
+#viewport .lt,
+#viewport .rt,
+#chat button.menu,
+#chat button.mentions,
+#chat form.message-search button,
+/* #chat button.search, */
+#chat .count::before,
+#form #submit,
+#footer button {
+	color: var(--link-color);
+}
+
+.btn {
+	border-color: var(--link-color);
+	color: var(--link-color);
+}
+
+.btn:disabled,
+.btn:focus,
+.btn:hover {
+	background: var(--link-color);
+	color: var(--body-color);
+}
+
+#viewport .lt:hover,
+#viewport .rt:hover,
+#chat button.menu:hover,
+#chat button.mentions:hover,
+#chat button.search:hover,
+#form #submit:hover {
+	color: var(--highlight-bg-color);
+}
+
+/* Active/hover */
+.channel-list-item:hover,
+.context-menu-item:focus,
+.textcomplete-item:focus,
+.context-menu-item:hover,
+.textcomplete-item:hover,
+.textcomplete-menu .active,
+#chat .userlist .user.active,
+#sidebar .active,
+#sidebar .active:hover,
+#footer button:hover {
+	background-color: var(--active-bg-color);
+}
+
+/* Network-/channel list sidebar */
+#sidebar {
+	width: 170px;
+}
+
+@media (max-width: 768px) {
+	#sidebar {
+		width: 200px;
+	}
+}
+
+.channel-list-item.is-muted {
+	opacity: unset;
+	/* the default is a bit aggressive */
+}
+
+.channel-list-item.is-muted::after {
+	content: '☣';
+}
+
+.channel-list-item,
+#sidebar .empty {
+	color: var(--body-color);
+}
+
+.channel-list-item,
+#sidebar .chan-placeholder {
+	padding-bottom: 3px;
+	padding-top: 3px;
+}
+
+#sidebar .network,
+#sidebar .network-placeholder {
+	margin-bottom: 3px;
+}
+
+#sidebar .network .collapse-network-icon::before {
+	color: var(--highlight-border-color);
+}
+
+#sidebar .network .collapse-network {
+	width: 35px;
+	opacity: 100;
+}
+
+#sidebar .logo,
+#sidebar .logo-inverted,
+.channel-list-item::before,
+#sidebar .channel-list-item[data-type='lobby'] .add-channel:not(.opened),
+.not-secure-tooltip,
+.not-secure-icon {
+	display: none;
+}
+
+#sidebar .channel-list-item[data-type='lobby'],
+#sidebar .not-secure .channel-list-item[data-type='lobby'] {
+	color: var(--highlight-border-color);
+}
+
+.channel-list-item[data-type='lobby'].active,
+.channel-list-item[data-type='lobby'] .lobby-wrap:hover,
+.not-secure .channel-list-item[data-type='lobby'].active,
+.not-secure .channel-list-item[data-type='lobby'] .lobby-wrap:hover {
+	color: var(--highlight-bg-color);
+}
+
+/* User list sidebar */
+#chat .user-mode {
+	padding: 8px 0 0;
+	margin-bottom: 0;
+}
+
+#chat .userlist .count {
+	background: var(--body-bg-color);
+}
+
+/* Inputs */
+.input,
+.input:hover,
+input,
+#form,
+#chat .userlist .search {
+	color: var(--body-color);
+	background-color: var(--window-bg-color);
+	border-color: var(--dim-color) !important;
+}
+
+.btn:active,
+.btn:focus,
+.input:focus {
+	border-color: rgba(0, 0, 0, 0) !important;
+	box-shadow: 0 0 0 3px var(--highlight-border-color);
+}
+
+.input::placeholder,
+input::placeholder,
+textarea::placeholder,
+#chat .userlist .search::placeholder {
+	color: var(--dim-color);
+}
+
+#form {
+	border: none;
+}
+
+#user-specified-css-input {
+	height: 400px;
+}
+
+.password-container .reveal-password span,
+#settings .extra-help,
+#settings .extra-experimental {
+	color: var(--highlight-border-color);
+}
+
+/* Windows */
+.window {
+	box-shadow: none;
+}
+
+.window h2 {
+	color: var(--body-color);
+}
+
+/* Content menu */
+.context-menu-item,
+.textcomplete-item,
+.textcomplete-item a {
+	color: var(--body-color);
+}
+
+.textcomplete-menu,
+#context-menu {
+	background-color: var(--body-bg-color);
+}
+
+.context-menu-item::before,
+.textcomplete-item::before {
+	color: var(--link-color);
+}
+
+/* Channels */
+#chat .chat-view[data-type='channel'] .msg.highlight {
+	background: var(--body-bg-color);
+	border-left: 5px solid var(--highlight-border-color);
+}
+
+#chat .chat-view[data-type='channel'] .msg.highlight .content {
+	border-left: none;
+}
+
+#chat .self {
+	border-left: 5px solid var(--active-bg-color);
+}
+
+#chat .self .content {
+	color: var(--body-color);
+}
+
+.irc-monospace,
+code {
+	color: var(--body-bg-color);
+	font-weight: bold;
+}
+
+#chat .chat-view .notice .user,
+#chat .notice .content,
+#chat .notice .time,
+.irc-fg2,
+#chat .msg[data-type='notice'] .content,
+#chat .msg[data-type='notice'] .time,
+#chat .msg[data-type='notice'] .user,
+#chat .msg[data-type='notice'] .from .user::before {
+	color: var(--link-color) !important;
+}
+
+#chat .toggle-content {
+	background: var(--body-bg-color);
+	box-shadow: none;
+}
+
+#chat .toggle-text a {
+	color: var(--body-color);
+}
+
+.header .topic {
+	color: var(--body-color);
+}
+
+/* MOTD */
+#chat .msg[data-type='motd'] .text {
+	color: var(--highlight-border-color);
+}
+
+#chat .msg[data-type='motd'] .text {
+	background-color: var(--dark-bg-color);
+}
+
+/* Scroll down button */
+.scroll-down-arrow {
+	border-color: var(--highlight-border-color);
+	background-color: var(--highlight-border-color);
+	color: white;
+}
+
+.scroll-down:hover .scroll-down-arrow {
+	background-color: var(--highlight-bg-color);
+}
+
+.scroll-down-number {
+	background-color: var(--highlight-border-color);
+	color: white;
+}
+
+/* Channel list */
+#chat table.channel-list td {
+	color: var(--body-color);
+}
+
+/* Fileuploading */
+#form #submit,
+#form #upload {
+	color: var(--highlight-border-color);
+}
+
+/* Image viewer */
+#image-viewer.opened {
+	backdrop-filter: blur(2px);
+}
+
+.mentions-popup {
+	border-color: var(--highlight-bg-color);
+	border-radius: 5px;
+	border-style: solid;
+}
+
+.mentions-popup .msg .content {
+	background-color: inherit;
+}
+
+.mentions-popup .msg .from {
+	color: var(--highlight-bg-color);
+}
