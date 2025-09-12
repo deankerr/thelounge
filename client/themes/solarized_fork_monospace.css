@@ -339,9 +339,18 @@ body {
 	color: #f0c079;
 }
 
-#chat .msg[data-type="motd"] .text,
+/* #chat .msg[data-type="motd"] .text, */
 #chat .toggle-content {
 	background-color: var(--background-light-color);
+}
+
+#chat .msg[data-type=monospace_block] .text {
+	color: var(--highlight-border-color);
+	background-color: var(--dark-bg-color);
+}
+
+#chat .msg[data-command=motd] .from::before {
+	color: var(--highlight-border-color);
 }
 
 #chat .toggle-content,

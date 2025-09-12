@@ -4,35 +4,36 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-The Lounge is a self-hosted web IRC client built with Node.js, TypeScript, Vue 3, and Socket.IO. This fork appears to be no longer maintained and contains manually added Docker configurations from thelounge/thelounge-docker.
+The Lounge is a self-hosted web IRC client built with Node.js, TypeScript, Vue 3, and Socket.IO. The original repo appears to be no longer maintained. This is a fork which is being used to patch minor issues and add custom personalizations. It is not intended to replace the original project, or be adopted by other
 
 ### Architecture
 
-- **Server**: TypeScript-based Node.js server using Express and Socket.IO
+The Lounge functions as an IRC bouncer/relay server that maintains persistent connections to IRC networks on behalf of users. This enables users to access their IRC sessions from any device while preserving message history and connection state.
 
-  - Entry point: `server/index.ts` (imports command-line interface)
-  - Main server logic: `server/server.ts`
-  - Models: `server/models/` (User, Network, Channel, Message, Prefix)
-  - Plugins: `server/plugins/` (IRC events, input commands, authentication, storage)
-  - Command-line tools: `server/command-line/` (user management, installation)
+**Connection Architecture:**
+- **Client ↔ Server**: Users connect to The Lounge server via Socket.IO (WebSocket/HTTP) from any web browser
+- **Server ↔ IRC**: The Lounge server maintains persistent IRC protocol connections to IRC networks using `irc-framework`
+- **State Synchronization**: IRC state on the server is reflected in real-time to connected web clients
+
+**Key Components:**
+
+- **Server**: TypeScript-based Node.js server using Express and Socket.IO (`server/server.ts`)
+  - **IRC Relay**: Each `Network` model (`server/models/network.ts`) wraps an `irc-framework` client connection
+  - **Event Processing**: IRC events are handled by plugins in `server/plugins/irc-events/` and translated to Socket.IO events
+  - **Client Management**: The `Client` class (`server/client.ts`) manages user state, networks, and attached web sessions
+  - **Persistence**: User configurations and message history stored locally (SQLite/text files)
 
 - **Client**: Vue 3 SPA with TypeScript
+  - **Socket.IO Interface**: Connects to server and receives real-time IRC state updates
+  - **State Management**: Vuex store mirrors server-side IRC state (networks, channels, messages)
+  - **Components**: Organized by feature in `client/components/`
 
-  - Entry point: `client/js/vue.ts`
-  - Components: `client/components/` (organized by feature)
-  - State management: Vuex store in `client/js/store.ts`
-  - Socket events: `client/js/socket-events/`
-  - Routing: Vue Router in `client/js/router.ts`
+- **Shared**: Common types and utilities (`shared/`)
+  - **Socket Events**: Typed Socket.IO event definitions (`shared/types/socket-events.d.ts`)
+  - **IRC Utilities**: Message formatting and parsing (`shared/irc.ts`)
+  - **Type Definitions**: Shared data structures for networks, channels, messages
 
-- **Shared**: Common types and utilities in `shared/`
-
-  - Type definitions shared between client and server
-  - IRC parsing and linkification utilities
-
-- **Build System**: Webpack with TypeScript compilation
-  - Client bundling: `webpack.config.ts`
-  - Server compilation: TypeScript compiler with `server/tsconfig.json`
-  - Parallel builds via `npm-run-all`
+This architecture allows users to disconnect their web clients without losing IRC connections, rejoin from different devices, and maintain full chat history and channel state.
 
 ## Development Commands
 
@@ -76,12 +77,6 @@ yarn start                  # Start production server
 NODE_ENV=production yarn build  # Production build
 ```
 
-### Git Hooks
-
-```bash
-yarn githooks-install      # Install pre-commit hooks
-```
-
 ## Configuration
 
 - Default configuration: `defaults/config.js`
@@ -114,12 +109,38 @@ The Docker setup uses Node.js 22 Alpine, runs as unprivileged user (node:node), 
 
 ## Plugin System
 
-The Lounge has an extensible plugin architecture:
+The Lounge has two distinct plugin systems (note the overloaded terminology):
 
-- IRC event handlers: `server/plugins/irc-events/`
-- Input commands: `server/plugins/inputs/`
-- Authentication providers: `server/plugins/auth/`
-- Message storage: `server/plugins/messageStorage/`
+### Built-in Plugins (`server/plugins/`)
+Core server functionality implemented as internal plugins:
+- **IRC event handlers**: `server/plugins/irc-events/` - Process IRC protocol events (join, part, message, etc.)
+- **Input commands**: `server/plugins/inputs/` - Handle user commands like `/join`, `/msg`, `/nick`
+- **Authentication providers**: `server/plugins/auth/` - LDAP and local authentication
+- **Message storage**: `server/plugins/messageStorage/` - SQLite and text file message persistence
+- **File upload**: `server/plugins/uploader/` - Handle file uploads and serving
+
+### External Plugin System (Experimental)
+Third-party extensions installed via npm packages:
+
+**Installation**: `thelounge install <package-name>` or `thelounge install file:/path/to/local/package`
+
+**Location**: Packages stored in `~/.thelounge/packages/node_modules/`
+
+**Package Requirements**: Must include `thelounge` metadata in `package.json` with version compatibility
+
+**Capabilities**:
+- **Themes**: Custom CSS stylesheets and assets
+- **Custom Commands**: Add new IRC commands via plugin API
+- **Message Injection**: Send messages to channels programmatically  
+- **File Serving**: Serve static assets from plugins
+- **Client Interaction**: Emit events to web clients, create channels
+- **Configuration Access**: Read server configuration
+- **Persistent Storage**: Per-plugin data directory
+- **Logging**: Plugin-specific logging with prefixes
+
+**API Surface**: Plugins receive a sandboxed API (`PublicClient`) rather than full server access. The system uses `server/plugins/packages/index.ts` to load and manage external packages.
+
+**Status**: Marked as experimental/alpha - API may change between versions. A warning is displayed when non-theme plugins are loaded.
 
 ## Testing
 
