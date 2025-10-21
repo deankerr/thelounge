@@ -1,5 +1,21 @@
 <template>
 	<form id="form" method="post" action="" @submit.prevent="onSubmit">
+		<div v-if="channel.pendingPreviews?.length" class="upload-previews">
+			<div
+				v-for="(preview, i) in channel.pendingPreviews"
+				:key="preview.url"
+				class="upload-preview"
+			>
+				<img :src="preview.url" :alt="preview.file.name" />
+				<button
+					type="button"
+					class="upload-preview-remove"
+					@click="removePreview(i, preview.url)"
+				>
+					×
+				</button>
+			</div>
+		</div>
 		<span id="upload-progressbar" />
 		<span id="nick">{{ network.nick }}</span>
 		<textarea
@@ -166,6 +182,7 @@ export default defineComponent({
 			props.channel.inputHistoryPosition = 0;
 			props.channel.pendingMessage = "";
 			input.value.value = "";
+			props.channel.pendingPreviews = [];
 			setInputSize();
 
 			// Store new message in history if last message isn't already equal
@@ -215,6 +232,25 @@ export default defineComponent({
 		const onBlur = () => {
 			if (autocompletionRef.value) {
 				autocompletionRef.value.hide();
+			}
+		};
+
+		const removePreview = (index: number, url: string) => {
+			if (!props.channel.pendingPreviews) {
+				return;
+			}
+
+			// Remove from previews array
+			props.channel.pendingPreviews.splice(index, 1);
+
+			// Remove URL from textarea if present
+			if (input.value && props.channel.pendingMessage.includes(url)) {
+				const escapedUrl = url.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+				props.channel.pendingMessage = props.channel.pendingMessage
+					.replace(new RegExp(`\\s*${escapedUrl}\\s*`, "g"), " ")
+					.trim();
+				input.value.value = props.channel.pendingMessage;
+				setInputSize();
 			}
 		};
 
@@ -352,6 +388,7 @@ export default defineComponent({
 			getInputPlaceholder,
 			onSubmit,
 			setPendingMessage,
+			removePreview,
 		};
 	},
 });

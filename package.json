@@ -29,7 +29,12 @@
     "test:mocha": "webpack --mode=development && cross-env NODE_ENV=test TS_NODE_PROJECT='./test/tsconfig.json' mocha --config=test/.mocharc.yml 'test/**/*.ts'",
     "test:nospec": "webpack --mode=development && cross-env NODE_ENV=test TS_NODE_PROJECT='./test/tsconfig.json' mocha --config=test/.mocharc.yml",
     "watch": "webpack --watch",
-    "githooks-install": "git config core.hooksPath scripts/git-hooks"
+    "githooks-install": "git config core.hooksPath scripts/git-hooks",
+    "electron": "cd electron && yarn start",
+    "electron:dev": "cd electron && yarn dev",
+    "electron:install": "cd electron && yarn install",
+    "electron:build": "cd electron && yarn build",
+    "electron:pack": "cd electron && yarn pack"
   },
   "keywords": [
     "lounge",

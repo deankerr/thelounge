@@ -7,6 +7,7 @@ class Uploader {
 	xhr: XMLHttpRequest | null = null;
 	fileQueue: File[] = [];
 	tokenKeepAlive: NodeJS.Timeout | null = null;
+	currentFile: File | null = null;
 
 	overlay: HTMLDivElement | null = null;
 	uploadProgressbar: HTMLSpanElement | null = null;
@@ -168,6 +169,8 @@ class Uploader {
 			return;
 		}
 
+		this.currentFile = file;
+
 		// Tell the server that we are still upload to this token
 		// so it does not become invalidated and fail the upload.
 		// This issue only happens if The Lounge is proxied through other software
@@ -306,6 +309,20 @@ class Uploader {
 
 		// Set the cursor after the link and a space
 		textbox.selectionStart = textbox.selectionEnd = textBeforeTail.length;
+
+		// Track preview if image
+		const activeChannel = store.state.activeChannel?.channel;
+
+		if (activeChannel && this.currentFile?.type.startsWith("image/")) {
+			if (!activeChannel.pendingPreviews) {
+				activeChannel.pendingPreviews = [];
+			}
+
+			activeChannel.pendingPreviews.push({
+				url: fullURL,
+				file: this.currentFile,
+			});
+		}
 	}
 
 	// TODO: This is a temporary hack while Vue porting is finalized

@@ -24,6 +24,7 @@ type ClientChan = Omit<SharedChan, "messages"> & {
 
 	// these are added in store/initChannel
 	pendingMessage: string;
+	pendingPreviews: Array<{url: string; file: File}>;
 	inputHistoryPosition: number;
 	inputHistory: string[];
 	historyLoading: boolean;

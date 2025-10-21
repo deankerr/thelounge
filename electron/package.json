@@ -1,0 +1,41 @@
+{
+  "name": "thelounge-electron",
+  "version": "1.0.0",
+  "description": "Electron wrapper for The Lounge IRC client",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder",
+    "pack": "electron-builder --dir"
+  },
+  "keywords": ["electron", "thelounge", "irc"],
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^32.0.0",
+    "electron-builder": "^25.0.0"
+  },
+  "build": {
+    "appId": "com.thelounge.electron",
+    "productName": "The Lounge",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "package.json"
+    ],
+    "mac": {
+      "category": "public.app-category.social-networking",
+      "icon": "icons/icon.icns"
+    },
+    "win": {
+      "icon": "icons/icon.ico"
+    },
+    "linux": {
+      "icon": "icons/icon.png",
+      "category": "Network"
+    }
+  }
+}
