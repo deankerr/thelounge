@@ -18,6 +18,7 @@ export function toClientChan(shared: SharedNetworkChan): ClientChan {
 		...props,
 		editTopic: false,
 		pendingMessage: "",
+		pendingPreviews: [],
 		inputHistoryPosition: 0,
 		historyLoading: false,
 		scrolledToBottom: true,

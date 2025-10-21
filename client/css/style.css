@@ -2208,7 +2208,57 @@ part/quit messages where we don't load previews (adds a blank line otherwise) */
 	background: white;
 	display: flex;
 	align-items: flex-end;
+	flex-wrap: wrap;
 	position: relative;
+}
+
+.upload-previews {
+	display: flex;
+	gap: 8px;
+	padding: 8px 8px 0 8px;
+	flex-wrap: wrap;
+	width: 100%;
+	order: -1;
+}
+
+.upload-preview {
+	position: relative;
+	width: 80px;
+	height: 80px;
+	border-radius: 4px;
+	overflow: hidden;
+	background: #f6f6f6;
+	border: 1px solid #e7e7e7;
+}
+
+.upload-preview img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.upload-preview-remove {
+	position: absolute;
+	top: 4px;
+	right: 4px;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	background: rgba(0, 0, 0, 0.6);
+	color: white;
+	border: none;
+	font-size: 16px;
+	line-height: 1;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	transition: background 0.2s;
+}
+
+.upload-preview-remove:hover {
+	background: rgba(0, 0, 0, 0.8);
 }
 
 #user-visible-error {
