@@ -381,7 +381,7 @@ function getRequestHeaders(headers: Record<string, string>) {
 		// lets pretend to be them to get the metadata
 		"User-Agent":
 			"Mozilla/5.0 (compatible; The Lounge IRC Client; +https://github.com/thelounge/thelounge)" +
-			" facebookexternalhit/1.1 Twitterbot/1.0",
+			" facebookexternalhit/1.1",
 		Accept: headers.accept || "*/*",
 		"X-Purpose": "preview",
 	};
