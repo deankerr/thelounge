@@ -21,6 +21,83 @@ const currentFetchPromises = new Map<string, Promise<FetchRequest>>();
 const imageTypeRegex = /^image\/.+/;
 const mediaTypeRegex = /^(audio|video)\/.+/;
 
+type OEmbedResponse = {
+	type: string;
+	version: string;
+	title?: string;
+	author_name?: string;
+	author_url?: string;
+	provider_name?: string;
+	provider_url?: string;
+	thumbnail_url?: string;
+	thumbnail_width?: number;
+	thumbnail_height?: number;
+	html?: string;
+	width?: number;
+	height?: number;
+};
+
+function isYouTubeURL(url: URL) {
+	const hostname = url.hostname.toLowerCase();
+	return (
+		hostname === "youtube.com" ||
+		hostname === "www.youtube.com" ||
+		hostname === "youtu.be" ||
+		hostname === "m.youtube.com"
+	);
+}
+
+async function fetchOEmbed(urlStr: string): Promise<OEmbedResponse | null> {
+	try {
+		const url = new URL(urlStr);
+
+		if (!isYouTubeURL(url)) {
+			return null;
+		}
+
+		const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent(
+			urlStr
+		)}&format=json`;
+		const response = await got(oembedUrl, {
+			responseType: "json",
+			timeout: {
+				request: Config.values.prefetchTimeout || 5000,
+			},
+			retry: {
+				limit: 0,
+			},
+		});
+
+		return response.body as OEmbedResponse;
+	} catch (e: any) {
+		log.debug("oEmbed fetch failed:", e?.message || e);
+		return null;
+	}
+}
+
+function parseOEmbed(preview: LinkPreview, oembed: OEmbedResponse) {
+	if (oembed.type === "video") {
+		preview.type = "link";
+		preview.head = oembed.title || "";
+		preview.body = oembed.author_name ? `By ${oembed.author_name}` : "";
+
+		if (preview.head.length > 100) {
+			preview.head = preview.head.substr(0, 100);
+		}
+
+		if (preview.body.length > 300) {
+			preview.body = preview.body.substr(0, 300);
+		}
+
+		// Store thumbnail URL to be fetched later
+		if (oembed.thumbnail_url) {
+			return oembed.thumbnail_url;
+		}
+	}
+
+	return null;
+}
+
 export default function (client: Client, chan: Chan, msg: Msg, cleanText: string) {
 	if (!Config.values.prefetch) {
 		return;
@@ -56,19 +133,73 @@ export default function (client: Client, chan: Chan, msg: Msg, cleanText: string
 
 		cleanLinks.push(preview);
 
-		fetch(url, {
-			accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-			language: client.config.browser?.language || "",
-		})
-			.then((res) => {
-				parse(msg, chan, preview, res, client);
+		// Try oEmbed first for supported platforms (YouTube)
+		const urlObj = new URL(url);
+
+		if (isYouTubeURL(urlObj)) {
+			fetchOEmbed(url)
+				.then((oembed) => {
+					if (oembed) {
+						const thumbnailUrl = parseOEmbed(preview, oembed);
+
+						if (thumbnailUrl && !Config.values.disableMediaPreview) {
+							// Fetch the thumbnail
+							fetch(thumbnailUrl, {language: client.config.browser?.language || ""})
+								.then((resThumb) => {
+									if (
+										resThumb !== null &&
+										imageTypeRegex.test(resThumb.type) &&
+										resThumb.size <= Config.values.prefetchMaxImageSize * 1024
+									) {
+										preview.thumbActualUrl = thumbnailUrl;
+									}
+
+									handlePreview(client, chan, msg, preview, resThumb);
+								})
+								.catch(() => {
+									// Emit preview without thumbnail
+									emitPreview(client, chan, msg, preview);
+								});
+						} else {
+							emitPreview(client, chan, msg, preview);
+						}
+
+						return;
+					}
+
+					// Fall back to regular fetch if oEmbed fails
+					return fetch(url, {
+						accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+						language: client.config.browser?.language || "",
+					});
+				})
+				.then((res) => {
+					if (res) {
+						parse(msg, chan, preview, res, client);
+					}
+				})
+				.catch((err) => {
+					preview.type = "error";
+					preview.error = "message";
+					preview.message = err.message;
+					emitPreview(client, chan, msg, preview);
+				});
+		} else {
+			// Regular fetch for non-YouTube URLs
+			fetch(url, {
+				accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+				language: client.config.browser?.language || "",
 			})
-			.catch((err) => {
-				preview.type = "error";
-				preview.error = "message";
-				preview.message = err.message;
-				emitPreview(client, chan, msg, preview);
-			});
+				.then((res) => {
+					parse(msg, chan, preview, res, client);
+				})
+				.catch((err) => {
+					preview.type = "error";
+					preview.error = "message";
+					preview.message = err.message;
+					emitPreview(client, chan, msg, preview);
+				});
+		}
 
 		return cleanLinks;
 	}, []);
