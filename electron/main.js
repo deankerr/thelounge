@@ -10,11 +10,12 @@ function createWindow() {
 	mainWindow = new BrowserWindow({
 		width: 1200,
 		height: 800,
-		minWidth: 800,
-		minHeight: 600,
+		minWidth: 300,
+		minHeight: 200,
 		show: false,
 		titleBarStyle: process.platform === "darwin" ? "default" : "default",
-		icon: path.join(__dirname, 'icons', process.platform === 'win32' ? 'icon.ico' : 'icon.png'),
+		icon: path.join(__dirname, 'icons',
+			process.platform === 'win32' ? 'icon.ico' : 'icon.png'),
 		webPreferences: {
 			nodeIntegration: false,
 			contextIsolation: true,

@@ -483,6 +483,12 @@ class SqliteMessageStorage implements SearchableMessageStorage {
 			params.push(query.channelName.toLowerCase());
 		}
 
+		if (query.nick) {
+			const escapedNick = query.nick.replace(/([%_@])/g, "@$1");
+			select += " AND json_extract(msg, '$.from.nick') LIKE ? ESCAPE '@' ";
+			params.push(`%${escapedNick}%`);
+		}
+
 		const maxResults = 100;
 
 		select += " ORDER BY time DESC LIMIT ? OFFSET ? ";

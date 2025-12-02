@@ -193,17 +193,27 @@ export default defineComponent({
 			store.commit("messageSearchPendingQuery", null);
 		};
 
+		// * Parse from:nick syntax from search string
+		const parseSearchTerm = (raw: string) => {
+			const fromMatch = raw.match(/from:(\S+)/i);
+			const nick = fromMatch?.[1] || undefined;
+			const searchTerm = raw.replace(/from:\S+\s*/i, "").trim();
+			return {searchTerm, nick};
+		};
+
 		const doSearch = () => {
 			if (!network.value || !channel.value) {
 				return;
 			}
 
 			clearSearchState(); // this is a new search, so we need to clear anything before that
+			const {searchTerm, nick} = parseSearchTerm(String(route.query.q || ""));
 			const query: SearchQuery = {
 				networkUuid: network.value.uuid,
 				channelName: channel.value.name,
-				searchTerm: String(route.query.q || ""),
+				searchTerm,
 				offset: offset.value,
+				nick,
 			};
 			store.commit("messageSearchPendingQuery", query);
 			socket.emit("search", query);
@@ -219,11 +229,13 @@ export default defineComponent({
 			oldScrollTop.value = chat.value.scrollTop;
 			oldChatHeight.value = chat.value.scrollHeight;
 
+			const {searchTerm, nick} = parseSearchTerm(String(route.query.q || ""));
 			const query: SearchQuery = {
 				networkUuid: network.value.uuid,
 				channelName: channel.value.name,
-				searchTerm: String(route.query.q || ""),
+				searchTerm,
 				offset: offset.value,
+				nick,
 			};
 			store.commit("messageSearchPendingQuery", query);
 			socket.emit("search", query);

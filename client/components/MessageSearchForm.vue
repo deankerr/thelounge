@@ -7,7 +7,7 @@
 				type="search"
 				name="search"
 				class="input"
-				placeholder="Search messages…"
+				placeholder="Search messages… (from:nick)"
 				@blur="closeSearch"
 				@keyup.esc="closeSearch"
 			/>

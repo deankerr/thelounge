@@ -5,6 +5,7 @@ export type SearchQuery = {
 	networkUuid: string;
 	channelName: string;
 	offset: number;
+	nick?: string;
 };
 
 export type SearchResponse = SearchQuery & {

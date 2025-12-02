@@ -9,7 +9,11 @@
     "build": "electron-builder",
     "pack": "electron-builder --dir"
   },
-  "keywords": ["electron", "thelounge", "irc"],
+  "keywords": [
+    "electron",
+    "thelounge",
+    "irc"
+  ],
   "license": "MIT",
   "devDependencies": {
     "electron": "^32.0.0",
@@ -24,7 +28,8 @@
     "files": [
       "main.js",
       "preload.js",
-      "package.json"
+      "package.json",
+      "icons/**/*"
     ],
     "mac": {
       "category": "public.app-category.social-networking",
