@@ -26,6 +26,8 @@ interface ServerToClientEvents {
 
 	"upload:auth": (token: string) => void;
 
+	"log:auth": (data: {token: string; channelId: number}) => void;
+
 	changelog: EventHandler<SharedChangelogData>;
 	"changelog:newversion": NoPayloadEventHandler;
 
@@ -131,6 +133,8 @@ interface ClientToServerEvents {
 
 	"upload:auth": NoPayloadEventHandler;
 	"upload:ping": (token: string) => void;
+
+	"log:auth": EventHandler<{target: number}>;
 
 	"mute:change": EventHandler<{target: number; setMutedTo: boolean}>;
 

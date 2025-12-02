@@ -30,6 +30,7 @@ export type ContextMenuItem =
 	| ContextMenuDividerItem;
 
 export function generateChannelContextMenu(
+	store: TypedStore,
 	channel: ClientChan,
 	network: ClientNetwork
 ): ContextMenuItem[] {
@@ -197,6 +198,24 @@ export function generateChannelContextMenu(
 						});
 					}
 				);
+			},
+		});
+	}
+
+	const canDownloadLogs =
+		!store.state.serverConfiguration?.public &&
+		store.state.settings.searchEnabled &&
+		(channel.type === ChanType.CHANNEL || channel.type === ChanType.QUERY);
+
+	if (canDownloadLogs) {
+		items.push({
+			label: "Download logs",
+			type: "item",
+			class: "download-logs",
+			action() {
+				socket.emit("log:auth", {
+					target: channel.id,
+				});
 			},
 		});
 	}

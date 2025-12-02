@@ -11,13 +11,15 @@ import net from "net";
 import log from "./log";
 import Client from "./client";
 import ClientManager from "./clientManager";
-import Uploader from "./plugins/uploader";
+import Uploader, {uploadTokens} from "./plugins/uploader";
 import Helper from "./helper";
 import Config, {ConfigType} from "./config";
 import Identification from "./identification";
 import changelog from "./plugins/changelog";
 import inputs from "./plugins/inputs";
 import Auth from "./plugins/auth";
+import TextFileMessageStorage from "./plugins/messageStorage/text";
+import {v4 as uuidv4} from "uuid";
 
 import themes from "./plugins/packages/themes";
 themes.loadLocalThemes();
@@ -645,6 +647,56 @@ function initializeClient(
 			}
 		});
 	}
+
+	socket.on("log:auth", (data) => {
+		if (!_.isPlainObject(data)) {
+			return;
+		}
+
+		const networkAndChan = client.find(data.target);
+
+		if (!networkAndChan) {
+			return;
+		}
+
+		const {network, chan} = networkAndChan;
+
+		if (!Config.values.messageStorage.includes("text")) {
+			return;
+		}
+
+		const logPath = path.join(
+			Config.getUserLogsPath(),
+			client.name,
+			TextFileMessageStorage.getNetworkFolderName(network),
+			TextFileMessageStorage.getChannelFileName(chan)
+		);
+
+		if (!fs.existsSync(logPath)) {
+			return;
+		}
+
+		const logToken = uuidv4();
+
+		const timeout = setTimeout(() => {
+			uploadTokens.delete(logToken);
+		}, 60 * 1000);
+
+		uploadTokens.set(logToken, {
+			type: "log",
+			clientName: client.name,
+			networkName: network.name,
+			networkUuid: network.uuid,
+			channelName: chan.name,
+			logPath: logPath,
+			timeout: timeout,
+		});
+
+		socket.emit("log:auth", {
+			token: logToken,
+			channelId: chan.id,
+		});
+	});
 
 	socket.on("mentions:get", () => {
 		socket.emit("mentions:list", client.mentions);

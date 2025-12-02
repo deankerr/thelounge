@@ -3,6 +3,7 @@ import "./auth";
 import "./commands";
 import "./init";
 import "./join";
+import "./log";
 import "./more";
 import "./msg";
 import "./msg_preview";

@@ -11,6 +11,7 @@ import log from "../log";
 import contentDisposition from "content-disposition";
 import type {Socket} from "socket.io";
 import {Request, Response} from "express";
+import TextFileMessageStorage from "./messageStorage/text";
 
 // Map of allowed mime types to their respecive default filenames
 // that will be rendered in browser without forcing them to be downloaded
@@ -35,7 +36,7 @@ const inlineContentDispositionTypes = {
 	"video/webm": "video.webm",
 };
 
-const uploadTokens = new Map();
+export const uploadTokens = new Map();
 
 class Uploader {
 	constructor(socket: Socket) {
@@ -75,6 +76,7 @@ class Uploader {
 	static router(this: void, express: any) {
 		express.get("/uploads/:name/:slug*?", Uploader.routeGetFile);
 		express.post("/uploads/new/:token", Uploader.routeUploadFile);
+		express.get("/logs/download/:token", Uploader.routeDownloadLog);
 	}
 
 	static async routeGetFile(this: void, req: Request, res: Response) {
@@ -286,6 +288,50 @@ class Uploader {
 
 		// pipe request body to busboy for processing
 		return req.pipe(busboyInstance);
+	}
+
+	static routeDownloadLog(this: void, req: Request, res: Response) {
+		const token = req.params.token;
+
+		if (typeof token !== "string") {
+			return res.status(400).send("Invalid token");
+		}
+
+		const tokenData = uploadTokens.get(token);
+
+		if (!tokenData || tokenData.type !== "log") {
+			return res.status(403).send("Invalid or expired token");
+		}
+
+		clearTimeout(tokenData.timeout);
+		uploadTokens.delete(token);
+
+		const logPath = tokenData.logPath;
+
+		if (!fs.existsSync(logPath)) {
+			return res.status(404).send("Log file not found");
+		}
+
+		const networkFolder = TextFileMessageStorage.getNetworkFolderName({
+			name: tokenData.networkName,
+			uuid: tokenData.networkUuid,
+		} as any);
+		const channelFile = TextFileMessageStorage.getChannelFileName({
+			name: tokenData.channelName,
+		} as any);
+
+		const downloadFilename = `${networkFolder}_${channelFile}`;
+
+		res.setHeader(
+			"Content-Disposition",
+			contentDisposition(downloadFilename, {
+				type: "attachment",
+			})
+		);
+		res.setHeader("Content-Type", "text/plain; charset=utf-8");
+		res.setHeader("Cache-Control", "no-cache");
+
+		return res.sendFile(logPath);
 	}
 
 	static getMaxFileSize() {
