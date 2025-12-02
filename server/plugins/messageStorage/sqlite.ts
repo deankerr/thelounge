@@ -489,10 +489,11 @@ class SqliteMessageStorage implements SearchableMessageStorage {
 			params.push(`%${escapedNick}%`);
 		}
 
-		const maxResults = 100;
+		// Load 100 results per request for consistent performance
+		const resultsPerPage = 100;
 
 		select += " ORDER BY time DESC LIMIT ? OFFSET ? ";
-		params.push(maxResults);
+		params.push(resultsPerPage);
 		params.push(query.offset);
 
 		const rows = await this.serialize_fetchall(select, ...params);

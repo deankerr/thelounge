@@ -124,9 +124,11 @@ export default defineComponent({
 		const chat = ref<HTMLDivElement>();
 
 		const loadMoreButton = ref<HTMLButtonElement>();
+		const historyObserver = ref<IntersectionObserver | null>(null);
 
 		const offset = ref(0);
 		const moreResultsAvailable = ref(false);
+		const lastResponseSize = ref(0);
 		const oldScrollTop = ref(0);
 		const oldChatHeight = ref(0);
 
@@ -189,6 +191,7 @@ export default defineComponent({
 
 		const clearSearchState = () => {
 			offset.value = 0;
+			lastResponseSize.value = 0;
 			store.commit("messageSearchResults", null);
 			store.commit("messageSearchPendingQuery", null);
 		};
@@ -224,6 +227,10 @@ export default defineComponent({
 				return;
 			}
 
+			if (!store.state.isConnected) {
+				return;
+			}
+
 			offset.value += 100;
 
 			oldScrollTop.value = chat.value.scrollTop;
@@ -239,6 +246,16 @@ export default defineComponent({
 			};
 			store.commit("messageSearchPendingQuery", query);
 			socket.emit("search", query);
+		};
+
+		const onLoadButtonObserved = (entries: IntersectionObserverEntry[]) => {
+			entries.forEach((entry) => {
+				if (!entry.isIntersecting) {
+					return;
+				}
+
+				onShowMoreClick();
+			});
 		};
 
 		const jumpToBottom = async () => {
@@ -264,6 +281,12 @@ export default defineComponent({
 			() => {
 				doSearch();
 				setActiveChannel();
+
+				// Re-observe the load more button for the new search
+				if (historyObserver.value && loadMoreButton.value) {
+					historyObserver.value.unobserve(loadMoreButton.value);
+					historyObserver.value.observe(loadMoreButton.value);
+				}
 			}
 		);
 
@@ -272,13 +295,23 @@ export default defineComponent({
 			() => {
 				doSearch();
 				setActiveChannel();
+
+				// Re-observe the load more button for the new search
+				if (historyObserver.value && loadMoreButton.value) {
+					historyObserver.value.unobserve(loadMoreButton.value);
+					historyObserver.value.observe(loadMoreButton.value);
+				}
 			}
 		);
 
-		watch(messages, async () => {
-			moreResultsAvailable.value = !!(
-				messages.value.length && !(messages.value.length % 100)
-			);
+		watch(messages, async (newMessages, oldMessages) => {
+			// Track how many results were added in the last response
+			const previousLength = oldMessages?.length || 0;
+			const currentLength = newMessages.length;
+			lastResponseSize.value = currentLength - previousLength;
+
+			// Show "Load More" if the last response was a full page (100 results)
+			moreResultsAvailable.value = lastResponseSize.value === 100;
 
 			if (!offset.value) {
 				await jumpToBottom();
@@ -302,12 +335,33 @@ export default defineComponent({
 
 			eventbus.on("escapekey", closeSearch);
 			eventbus.on("re-search", doSearch);
+
+			// Set up IntersectionObserver for infinite scroll
+			void nextTick(() => {
+				if (!chat.value) {
+					return;
+				}
+
+				if (window.IntersectionObserver) {
+					historyObserver.value = new window.IntersectionObserver(onLoadButtonObserved, {
+						root: chat.value,
+					});
+				}
+
+				if (historyObserver.value && loadMoreButton.value) {
+					historyObserver.value.observe(loadMoreButton.value);
+				}
+			});
 		});
 
 		onUnmounted(() => {
 			eventbus.off("escapekey", closeSearch);
 			eventbus.off("re-search", doSearch);
 			clearSearchState();
+
+			if (historyObserver.value) {
+				historyObserver.value.disconnect();
+			}
 		});
 
 		return {
