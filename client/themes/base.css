@@ -1,0 +1,903 @@
+/*!
+ * Base Theme for The Lounge
+ * 
+ * A two-tier CSS variable system designed for easy customization and
+ * adaptation of terminal color schemes. Dark-first, but structured for
+ * flexibility.
+ * 
+ * Structure:
+ * 1. Palette - Raw terminal-style colors (swap these for different themes)
+ * 2. Semantic - Purpose-based mapping (rarely needs changing)
+ * 3. UI Components - Actual styling rules
+ */
+
+/* =============================================================================
+   1. PALETTE
+   Terminal-style color naming for easy adaptation from popular themes
+   (Dracula, Tokyo Night, One Dark, Gruvbox, Nord, etc.)
+   ============================================================================= */
+
+:root {
+  /* * Base ANSI colors */
+  --color-black: #1a1b26;
+  --color-red: #f7768e;
+  --color-green: #9ece6a;
+  --color-yellow: #e0af68;
+  --color-blue: #7aa2f7;
+  --color-magenta: #bb9af7;
+  --color-cyan: #7dcfff;
+  --color-white: #a9b1d6;
+
+  /* * Bright/bold variants */
+  --color-bright-black: #414868;
+  --color-bright-red: #ff7a93;
+  --color-bright-green: #b9f27c;
+  --color-bright-yellow: #ff9e64;
+  --color-bright-blue: #7da6ff;
+  --color-bright-magenta: #c0a6ff;
+  --color-bright-cyan: #0db9d7;
+  --color-bright-white: #c0caf5;
+
+  /* * Surface scale (background hierarchy, dark to light) */
+  --color-surface-0: #13131a;
+  --color-surface-1: #16161e;
+  --color-surface-2: #1a1b26;
+  --color-surface-3: #1f2335;
+  --color-surface-4: #292e42;
+  --color-surface-5: #3b4261;
+}
+
+/* =============================================================================
+   2. SEMANTIC LAYER
+   Maps palette colors to UI purposes. shadcn/ui-inspired naming.
+   ============================================================================= */
+
+:root {
+  /* * Backgrounds */
+  --background: var(--color-surface-2);
+  --background-deep: var(--color-surface-0);
+  --background-muted: var(--color-surface-1);
+  --background-elevated: var(--color-surface-3);
+  --background-active: var(--color-surface-4);
+  --background-highlight: var(--color-surface-5);
+
+  /* * Foreground (text) */
+  --foreground: var(--color-bright-white);
+  --foreground-muted: var(--color-white);
+  --foreground-subtle: var(--color-bright-black);
+
+  /* * Borders */
+  --border: var(--color-surface-4);
+  --border-muted: var(--color-surface-3);
+  --border-accent: var(--color-blue);
+  --sidebar-border: var(--border-muted);
+
+  /* * Interactive */
+  --accent: var(--color-blue);
+  --accent-hover: var(--color-bright-blue);
+  --accent-foreground: var(--color-surface-1);
+
+  /* * Semantic states */
+  --destructive: var(--color-red);
+  --destructive-hover: var(--color-bright-red);
+  --success: var(--color-green);
+  --success-hover: var(--color-bright-green);
+  --warning: var(--color-yellow);
+  --warning-hover: var(--color-bright-yellow);
+  --info: var(--color-cyan);
+
+  /* * IRC-specific semantics */
+  --highlight-bg: var(--color-surface-3);
+  --highlight-border: var(--color-yellow);
+  --unread-marker: var(--color-cyan);
+  --date-marker: var(--color-bright-black);
+  --self-message-border: var(--color-surface-4);
+  --notice-color: var(--color-cyan);
+  --action-color: var(--color-bright-yellow);
+  --error-color: var(--color-red);
+  --join-color: var(--color-green);
+  --part-color: var(--color-red);
+  --lobby-color: var(--color-blue);
+  --lobby-color-active: var(--color-bright-blue);
+
+  /* * Input placeholder - explicit variable for consistency */
+  --placeholder: var(--foreground-subtle);
+
+  /* * Bridge to existing system variables */
+  --body-bg-color: var(--background-deep);
+  --window-bg-color: var(--background);
+  --body-color: var(--foreground);
+  --body-color-muted: var(--foreground-subtle);
+  --link-color: var(--accent);
+  --button-color: var(--accent);
+  --button-text-color-hover: var(--accent-foreground);
+  --overlay-bg-color: rgba(0, 0, 0, 0.7);
+  --window-heading-color: var(--foreground-muted);
+  --date-marker-color: var(--date-marker);
+  --unread-marker-color: var(--unread-marker);
+  --highlight-bg-color: var(--highlight-bg);
+  --highlight-border-color: var(--highlight-border);
+  --upload-progressbar-color: var(--accent);
+}
+
+/* =============================================================================
+   3. TYPOGRAPHY & PLACEHOLDERS
+   Explicit targeting for all input contexts to ensure consistency.
+   ============================================================================= */
+
+/* * Global placeholder baseline */
+::placeholder {
+  color: var(--placeholder);
+  opacity: 1;
+}
+
+::-webkit-input-placeholder {
+  color: var(--placeholder);
+}
+
+/* * Explicit placeholder rules for specific inputs */
+.input::placeholder,
+input::placeholder,
+textarea::placeholder,
+#chat .userlist .search::placeholder,
+#form .input::placeholder {
+  color: var(--placeholder);
+  opacity: 1;
+}
+
+/* * Component overrides - these have hardcoded styles in Vue components */
+form.message-search input {
+  background-color: var(--background-elevated);
+  color: var(--foreground);
+}
+
+form.message-search input::placeholder {
+  color: var(--placeholder);
+  opacity: 1;
+}
+
+#chat form.message-search button {
+  color: var(--foreground-muted);
+}
+
+.jump-to-input .input {
+  background-color: var(--background-elevated);
+  color: var(--foreground);
+}
+
+.jump-to-input .input::placeholder {
+  color: var(--placeholder);
+  opacity: 1;
+}
+
+.jump-to-input::before {
+  color: var(--placeholder);
+}
+
+/* =============================================================================
+   4. SCROLLBARS
+   ============================================================================= */
+
+html {
+  scrollbar-color: var(--color-surface-5) var(--color-surface-1);
+  scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface-1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-surface-4);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-surface-5);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: var(--color-bright-black);
+}
+
+/* =============================================================================
+   5. LOGO
+   ============================================================================= */
+
+#loading .logo,
+.window .logo {
+  display: none;
+}
+
+#loading .logo-inverted,
+.window .logo-inverted {
+  display: inline-block;
+}
+
+#sidebar .logo-inverted {
+  height: 35px;
+}
+
+/* =============================================================================
+   6. SIDEBAR - Networks, Channels, Footer
+   ============================================================================= */
+
+#sidebar {
+  background-color: var(--background-muted);
+  border-right: 1px solid var(--sidebar-border);
+}
+
+#sidebar .networks {
+  padding: 5px 0;
+}
+
+#sidebar .network {
+  margin-bottom: 10px;
+}
+
+/* * Channel list items */
+.channel-list-item {
+  color: var(--foreground-muted);
+  padding: 5px 15px;
+}
+
+.channel-list-item:hover {
+  background-color: var(--background-active);
+  color: var(--foreground);
+}
+
+.channel-list-item.active {
+  background-color: var(--background-active);
+  color: var(--foreground);
+}
+
+/* * Lobby (network name) */
+.channel-list-item[data-type="lobby"] {
+  color: var(--lobby-color);
+}
+
+.channel-list-item[data-type="lobby"]:hover,
+.channel-list-item[data-type="lobby"].active {
+  color: var(--lobby-color-active);
+}
+
+/* * Channel states */
+.channel-list-item.not-secure,
+.channel-list-item.not-connected,
+.channel-list-item.parted-channel {
+  color: var(--foreground-subtle);
+}
+
+.channel-list-item.not-secure:hover,
+.channel-list-item.not-connected:hover,
+.channel-list-item.parted-channel:hover,
+.channel-list-item.not-secure.active,
+.channel-list-item.not-connected.active,
+.channel-list-item.parted-channel.active {
+  color: var(--foreground-muted);
+}
+
+span.not-secure-icon {
+  color: var(--warning);
+}
+
+/* * Badges */
+.channel-list-item .badge {
+  background-color: var(--background-highlight);
+  color: var(--foreground-muted);
+}
+
+.channel-list-item .badge.highlight {
+  background-color: var(--highlight-border);
+  color: var(--background);
+}
+
+/* * Network collapse icon */
+#sidebar .network .collapse-network-icon::before {
+  color: var(--foreground-subtle);
+}
+
+/* * Footer */
+#footer {
+  background-color: var(--background-muted);
+  margin-bottom: 10px;
+}
+
+#footer button {
+  color: var(--foreground-muted);
+}
+
+#footer button:hover,
+#footer button.active {
+  background-color: var(--background-active);
+  color: var(--foreground);
+}
+
+/* =============================================================================
+   7. CHAT AREA - Messages, Content, Timestamps
+   ============================================================================= */
+
+#chat .content {
+  border-color: var(--border-muted);
+}
+
+#chat .header {
+  border-color: var(--border-muted);
+}
+
+/* * Self messages */
+#chat .self {
+  background: linear-gradient(to right, var(--self-message-border) 3px, transparent 3px);
+}
+
+#chat .self .content {
+  color: var(--foreground-muted);
+}
+
+/* * Highlights */
+#chat .chat-view[data-type="channel"] .msg.highlight {
+  background-color: var(--highlight-bg);
+  border-left: 3px solid var(--highlight-border);
+}
+
+#chat .chat-view[data-type="channel"] .msg.highlight .time {
+  color: var(--foreground);
+}
+
+#chat .chat-view[data-type="channel"] .highlight .toggle-content {
+  background-color: var(--background-active);
+}
+
+/* * Message types - joins, parts, etc. */
+#chat .msg[data-type="join"] .from::before {
+  color: var(--join-color);
+}
+
+#chat .msg[data-type="part"] .from::before,
+#chat .msg[data-type="quit"] .from::before,
+#chat .msg[data-type="kick"] .from::before {
+  color: var(--part-color);
+}
+
+#chat .msg[data-type="nick"] .from::before,
+#chat .msg[data-type="mode"] .from::before,
+#chat .msg[data-type="mode_channel"] .from::before,
+#chat .msg[data-type="topic"] .from::before,
+#chat .msg[data-type="invite"] .from::before,
+#chat .msg[data-type="whois"] .from::before {
+  color: var(--info);
+}
+
+#chat .msg[data-type="away"] .from::before,
+#chat .msg[data-type="back"] .from::before {
+  color: var(--foreground-subtle);
+}
+
+/* * Notices */
+#chat .msg[data-type="notice"] .content,
+#chat .msg[data-type="notice"] .time,
+#chat .msg[data-type="notice"] .user,
+#chat .msg[data-type="wallops"] .content,
+#chat .msg[data-type="wallops"] .time {
+  color: var(--notice-color);
+}
+
+/* * Actions */
+#chat .msg[data-type="action"] .from,
+#chat .msg[data-type="action"] .content,
+#chat .msg[data-type="action"] .user {
+  color: var(--action-color);
+}
+
+/* * Errors */
+#chat .msg[data-type="error"],
+#chat .msg[data-type="error"] .from {
+  color: var(--error-color);
+}
+
+/* * MOTD and monospace blocks */
+#chat .msg[data-type="monospace_block"] .text {
+  background-color: var(--background-muted);
+  color: var(--foreground);
+}
+
+#chat .msg[data-command="motd"] .from::before {
+  color: var(--accent);
+}
+
+/* * Toggle content (embeds, previews) */
+#chat .toggle-content {
+  background: var(--background-elevated);
+  color: var(--foreground);
+}
+
+#chat .toggle-text .body,
+#chat .toggle-type-error {
+  color: var(--foreground-muted);
+}
+
+#chat .toggle-text a {
+  color: var(--foreground);
+}
+
+/* * Tables (channel list, ban list) */
+#chat table.channel-list td {
+  color: var(--foreground-muted);
+}
+
+#chat table.channel-list th,
+#chat table.ban-list th,
+#chat table.channel-list td,
+#chat table.ban-list td {
+  border-bottom-color: var(--border-muted);
+}
+
+/* * Show more button */
+#chat .show-more .btn {
+  background: var(--background-active);
+  color: var(--foreground);
+  border: none;
+}
+
+#chat .show-more .btn:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+/* =============================================================================
+   8. HEADER
+   ============================================================================= */
+
+.header .topic {
+  color: var(--foreground-muted);
+}
+
+.header .topic-input {
+  border-color: var(--border);
+  background: var(--background-elevated);
+  color: var(--foreground);
+}
+
+.topic-container .save-topic span {
+  color: var(--accent);
+}
+
+/* * Header buttons */
+#chat button.close,
+#chat button.mentions,
+#chat button.menu,
+#chat button.search {
+  color: var(--foreground-muted);
+}
+
+#chat button.close:hover,
+#chat button.mentions:hover,
+#chat button.menu:hover,
+#chat button.search:hover {
+  background: var(--background-active);
+  color: var(--foreground);
+  border-radius: 4px;
+}
+
+#viewport .lt,
+#viewport .rt {
+  color: var(--foreground-muted);
+}
+
+#viewport .lt:hover,
+#viewport .rt:hover {
+  background: var(--background-active);
+  border-radius: 4px;
+}
+
+/* * Unread indicator dot */
+#viewport .lt::after {
+  background-color: var(--destructive);
+  border: 2px solid var(--background);
+}
+
+/* =============================================================================
+   9. USER LIST
+   ============================================================================= */
+
+#chat .userlist {
+  border-color: var(--border-muted);
+}
+
+#chat .userlist .count {
+  background: var(--background-muted);
+}
+
+#chat .count::before {
+  color: var(--foreground-subtle);
+}
+
+#chat .userlist .search {
+  background: var(--background-elevated);
+  color: var(--foreground);
+  border: none;
+}
+
+#chat .userlist .user {
+  color: var(--foreground-muted);
+}
+
+#chat .userlist .user.active {
+  background-color: var(--background-active);
+}
+
+#chat .user-mode::before {
+  color: var(--foreground-subtle);
+}
+
+/* =============================================================================
+   10. FORMS & INPUTS
+   ============================================================================= */
+
+.input {
+  background-color: var(--background-elevated);
+  border: 1px solid var(--border);
+  color: var(--foreground);
+}
+
+.input:not(:disabled):hover {
+  border-color: var(--border-accent);
+}
+
+.input:not(:disabled):focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(122, 162, 247, 0.2);
+}
+
+.input:disabled {
+  background-color: var(--background-muted);
+  color: var(--foreground-subtle);
+}
+
+/* * Buttons */
+.btn {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.btn:hover,
+.btn:focus {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.btn:active,
+.btn:focus {
+  box-shadow: 0 0 0 3px rgba(122, 162, 247, 0.3);
+}
+
+.btn-reconnect {
+  background: var(--destructive);
+  color: var(--foreground);
+  border: none;
+}
+
+/* * Message form */
+#form {
+  background: var(--background-elevated);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin: 0 10px 10px;
+}
+
+#form .input {
+  background: transparent;
+  border: none;
+}
+
+#form #nick {
+  background: var(--background-muted);
+  color: var(--foreground-muted);
+}
+
+#form #submit,
+#form #upload {
+  color: var(--foreground-muted);
+}
+
+#form #submit:hover,
+#form #upload:hover {
+  color: var(--accent);
+}
+
+/* * Search form */
+form.message-search input {
+  background: var(--background-elevated);
+  color: var(--foreground);
+}
+
+#chat form.message-search button {
+  color: var(--foreground-muted);
+}
+
+#chat form.message-search button:hover {
+  background: var(--background-active);
+  border-radius: 4px;
+}
+
+/* * Settings inputs */
+#connect input,
+#settings input,
+#settings textarea,
+#settings select {
+  background: var(--background-elevated);
+  color: var(--foreground);
+  border-color: var(--border);
+}
+
+/* * Password reveal */
+.password-container .reveal-password span {
+  color: var(--foreground-muted);
+}
+
+.password-container .reveal-password-visible span::before {
+  color: var(--accent);
+}
+
+/* * Extra help icons */
+#settings .extra-help,
+#connect .extra-help {
+  color: var(--accent);
+}
+
+/* =============================================================================
+   11. CONTEXT MENUS & POPOVERS
+   ============================================================================= */
+
+#context-menu,
+.textcomplete-menu {
+  background-color: var(--background-elevated);
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.context-menu-item,
+.textcomplete-item {
+  color: var(--foreground);
+}
+
+.context-menu-item::before {
+  color: var(--accent);
+}
+
+.context-menu-item.active,
+.context-menu-item:hover,
+.textcomplete-item:focus,
+.textcomplete-item:hover,
+.textcomplete-menu .active {
+  background-color: var(--background-active);
+}
+
+.context-menu-divider {
+  background-color: var(--border);
+}
+
+.textcomplete-item a {
+  color: var(--foreground);
+}
+
+/* * Mentions popup */
+.mentions-popup {
+  background: var(--background-elevated);
+  border: 1px solid var(--border);
+}
+
+/* * Jump to input */
+.jump-to-input .input {
+  background: var(--background-elevated);
+}
+
+/* =============================================================================
+   12. WINDOWS & MODALS
+   ============================================================================= */
+
+.window {
+  box-shadow: none;
+}
+
+.window h2 {
+  color: var(--foreground);
+}
+
+.window h3 {
+  color: var(--foreground-muted);
+}
+
+/* * Settings errors */
+#settings .error {
+  color: var(--destructive);
+}
+
+#settings #change-password .success {
+  color: var(--success);
+}
+
+/* * Version checker */
+#version-checker.loading {
+  background-color: var(--background-active);
+  color: var(--foreground-muted);
+}
+
+#version-checker.new-version,
+#version-checker.new-packages {
+  background-color: var(--background-active);
+  color: var(--info);
+}
+
+#version-checker.error {
+  background-color: var(--background-active);
+  color: var(--destructive);
+}
+
+#version-checker.up-to-date {
+  background-color: var(--background-active);
+  color: var(--success);
+}
+
+/* * User visible error banner */
+#user-visible-error {
+  background: var(--destructive);
+  color: var(--foreground);
+}
+
+/* =============================================================================
+   13. CODE & MONOSPACE
+   ============================================================================= */
+
+code,
+.irc-monospace {
+  background: var(--background-elevated);
+  color: var(--foreground);
+  border-radius: 3px;
+}
+
+pre {
+  background-color: var(--background-muted);
+  color: var(--foreground);
+}
+
+kbd {
+  color: var(--foreground);
+  background-color: var(--background-elevated);
+  border-color: var(--border);
+  text-shadow: none;
+  box-shadow: 0 2px 0 var(--border), inset 0 1px 1px var(--background-active);
+}
+
+/* =============================================================================
+   14. SCROLL DOWN BUTTON
+   ============================================================================= */
+
+.scroll-down-arrow {
+  border-color: var(--accent);
+  background-color: var(--background-elevated);
+  color: var(--accent);
+}
+
+.scroll-down:hover .scroll-down-arrow {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.scroll-down-number {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+/* =============================================================================
+   15. IMAGE VIEWER
+   ============================================================================= */
+
+#image-viewer.opened {
+  backdrop-filter: blur(4px);
+}
+
+/* =============================================================================
+   16. DRAG & DROP SORTING
+   ============================================================================= */
+
+.ui-sortable-ghost::after,
+.ui-sortable-dragging-touch-cue:not(.ui-sortable-dragging)::after {
+  background: var(--background-active);
+  border: 1px dashed var(--border-accent);
+}
+
+/* =============================================================================
+   17. USER NICK COLORS
+   8 distinct colors cycling through 32 slots.
+   Designed for readability on dark backgrounds.
+   ============================================================================= */
+
+.user { color: var(--foreground-muted); }
+
+/* 8 base nick colors */
+.user.color-1,  .user.color-9,  .user.color-17, .user.color-25 { color: var(--color-red); }
+.user.color-2,  .user.color-10, .user.color-18, .user.color-26 { color: var(--color-green); }
+.user.color-3,  .user.color-11, .user.color-19, .user.color-27 { color: var(--color-cyan); }
+.user.color-4,  .user.color-12, .user.color-20, .user.color-28 { color: var(--color-magenta); }
+.user.color-5,  .user.color-13, .user.color-21, .user.color-29 { color: var(--color-yellow); }
+.user.color-6,  .user.color-14, .user.color-22, .user.color-30 { color: var(--color-bright-yellow); }
+.user.color-7,  .user.color-15, .user.color-23, .user.color-31 { color: var(--color-blue); }
+.user.color-8,  .user.color-16, .user.color-24, .user.color-32 { color: var(--color-bright-cyan); }
+
+/* =============================================================================
+   18. IRC COLORS
+   Contrast adjustments for standard IRC color codes on dark background.
+   ============================================================================= */
+
+.irc-fg0  { color: #c0caf5; }  /* white */
+.irc-fg1  { color: #1a1b26; }  /* black */
+.irc-fg2  { color: #7aa2f7; }  /* blue - brightened */
+.irc-fg3  { color: #9ece6a; }  /* green */
+.irc-fg4  { color: #f7768e; }  /* red */
+.irc-fg5  { color: #db7093; }  /* brown/maroon - adjusted */
+.irc-fg6  { color: #bb9af7; }  /* purple */
+.irc-fg7  { color: #ff9e64; }  /* orange */
+.irc-fg8  { color: #e0af68; }  /* yellow */
+.irc-fg9  { color: #b9f27c; }  /* light green */
+.irc-fg10 { color: #73daca; }  /* teal */
+.irc-fg11 { color: #7dcfff; }  /* cyan */
+.irc-fg12 { color: #7da6ff; }  /* light blue - brightened */
+.irc-fg13 { color: #fca7ea; }  /* pink */
+.irc-fg14 { color: #565f89; }  /* grey */
+.irc-fg15 { color: #9aa5ce; }  /* light grey */
+
+/* =============================================================================
+   19. MOBILE & RESPONSIVE
+   ============================================================================= */
+
+/* * iOS PWA safe area handling */
+@supports (-webkit-touch-callout: none) {
+  @media (display-mode: standalone) {
+    #form {
+      margin: 5px 10px 25px;
+    }
+
+    #footer {
+      margin-bottom: 25px;
+    }
+  }
+
+  @media (display-mode: standalone) and (max-width: 480px) {
+    #chat .chat-view[data-type="search-results"] .messages {
+      margin-bottom: 25px;
+    }
+  }
+
+  @media (display-mode: standalone) and (orientation: landscape),
+         (display-mode: standalone) and (orientation: portrait) and (min-width: 640px),
+         (display-mode: browser) and (min-width: 640px) and (orientation: landscape) {
+    #chat .chat-view[data-type="search-results"] .messages {
+      margin-bottom: 15px;
+    }
+  }
+
+  @media (display-mode: browser) and (min-width: 640px) {
+    #form,
+    #footer {
+      margin-bottom: 25px;
+    }
+  }
+}
+
+/* * Mobile sidebar overlay */
+@media (max-width: 768px) {
+  #sidebar-overlay {
+    background: rgba(0, 0, 0, 0.7);
+  }
+}
+
+/* * Search cancel button (webkit) */
+input[type="search"]::-webkit-search-cancel-button {
+  filter: invert(70%);
+}

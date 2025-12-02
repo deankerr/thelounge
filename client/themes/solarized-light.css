@@ -1,0 +1,138 @@
+/*!
+ * Solarized Light Theme for The Lounge
+ * Based on Ethan Schoonover's Solarized palette
+ * https://ethanschoonover.com/solarized/
+ * 
+ * Extends base.css - only overrides the palette layer.
+ */
+
+@import "base.css";
+
+:root {
+  /* * Solarized base tones */
+  --sol-base03: #002b36;  /* darkest */
+  --sol-base02: #073642;  /* dark bg highlights */
+  --sol-base01: #586e75;  /* emphasis for light theme */
+  --sol-base00: #657b83;  /* body text for light theme */
+  --sol-base0:  #839496;  /* dark theme body text */
+  --sol-base1:  #93a1a1;  /* comments for light theme */
+  --sol-base2:  #eee8d5;  /* bg highlights */
+  --sol-base3:  #fdf6e3;  /* main bg */
+
+  /* * Solarized accent colors */
+  --sol-yellow:  #b58900;
+  --sol-orange:  #cb4b16;
+  --sol-red:     #dc322f;
+  --sol-magenta: #d33682;
+  --sol-violet:  #6c71c4;
+  --sol-blue:    #268bd2;
+  --sol-cyan:    #2aa198;
+  --sol-green:   #859900;
+
+  /* * Map to base palette - ANSI colors (inverted for light) */
+  --color-black:   var(--sol-base2);
+  --color-red:     var(--sol-red);
+  --color-green:   var(--sol-green);
+  --color-yellow:  var(--sol-yellow);
+  --color-blue:    var(--sol-blue);
+  --color-magenta: var(--sol-magenta);
+  --color-cyan:    var(--sol-cyan);
+  --color-white:   var(--sol-base00);
+
+  /* * Bright variants */
+  --color-bright-black:   var(--sol-base1);
+  --color-bright-red:     var(--sol-orange);
+  --color-bright-green:   var(--sol-base01);
+  --color-bright-yellow:  var(--sol-orange);
+  --color-bright-blue:    var(--sol-violet);
+  --color-bright-magenta: var(--sol-violet);
+  --color-bright-cyan:    var(--sol-base01);
+  --color-bright-white:   var(--sol-base01);
+
+  /* * Surface scale (background hierarchy, light to dark for light theme) */
+  --color-surface-0: #fefbf4;           /* brightest */
+  --color-surface-1: var(--sol-base3);  /* base bg */
+  --color-surface-2: var(--sol-base2);  /* elevated/muted */
+  --color-surface-3: #e4dcc6;           /* more contrast */
+  --color-surface-4: #d6cdb7;           /* active states */
+  --color-surface-5: var(--sol-base1);  /* borders, subtle */
+
+  /* * Override semantics */
+  --foreground: var(--sol-base00);
+  --foreground-muted: var(--sol-base00);
+  --foreground-subtle: var(--sol-base1);
+  
+  /* * Placeholder - base1 is solarized's secondary content color for light */
+  --placeholder: var(--sol-base1);
+
+  --accent: var(--sol-blue);
+  --accent-hover: var(--sol-cyan);
+  --accent-foreground: var(--sol-base3);
+  
+  --lobby-color: var(--sol-blue);
+  --lobby-color-active: var(--sol-cyan);
+  --highlight-border: var(--sol-yellow);
+  --highlight-bg: var(--sol-base2);
+  --unread-marker: var(--sol-magenta);
+  --date-marker: var(--sol-base1);
+  --notice-color: var(--sol-cyan);
+  --action-color: var(--sol-orange);
+  --join-color: var(--sol-green);
+  --part-color: var(--sol-red);
+  --self-message-border: var(--sol-base2);
+}
+
+/* * Light theme needs inverted logo */
+#loading .logo,
+.window .logo {
+  display: inline-block;
+}
+
+#loading .logo-inverted,
+.window .logo-inverted {
+  display: none;
+}
+
+/* * Scrollbar adjustments for light bg */
+html {
+  scrollbar-color: var(--sol-base1) var(--sol-base2);
+}
+
+::-webkit-scrollbar-track {
+  background: var(--sol-base2);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--sol-base1);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--sol-base00);
+}
+
+/* * Badge adjustments for light */
+.channel-list-item .badge.highlight {
+  color: var(--sol-base3);
+}
+
+/* * Input focus ring for light */
+.input:not(:disabled):focus {
+  box-shadow: 0 0 0 2px rgba(38, 139, 210, 0.25);
+}
+
+.btn:active,
+.btn:focus {
+  box-shadow: 0 0 0 3px rgba(38, 139, 210, 0.3);
+}
+
+/* * Mobile overlay lighter */
+@media (max-width: 768px) {
+  #sidebar-overlay {
+    background: rgba(253, 246, 227, 0.8);
+  }
+}
+
+/* * Search cancel button for light bg */
+input[type="search"]::-webkit-search-cancel-button {
+  filter: none;
+}

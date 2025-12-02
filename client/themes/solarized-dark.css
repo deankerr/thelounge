@@ -1,0 +1,75 @@
+/*!
+ * Solarized Dark Theme for The Lounge
+ * Based on Ethan Schoonover's Solarized palette
+ * https://ethanschoonover.com/solarized/
+ * 
+ * Extends base.css - only overrides the palette layer.
+ */
+
+@import "base.css";
+
+:root {
+  /* * Solarized base tones */
+  --sol-base03: #002b36;  /* darkest - main bg */
+  --sol-base02: #073642;  /* dark bg highlights */
+  --sol-base01: #586e75;  /* comments, secondary */
+  --sol-base00: #657b83;  /* light theme body text */
+  --sol-base0:  #839496;  /* dark theme body text */
+  --sol-base1:  #93a1a1;  /* emphasis */
+  --sol-base2:  #eee8d5;  /* light theme bg highlights */
+  --sol-base3:  #fdf6e3;  /* lightest - light theme bg */
+
+  /* * Solarized accent colors */
+  --sol-yellow:  #b58900;
+  --sol-orange:  #cb4b16;
+  --sol-red:     #dc322f;
+  --sol-magenta: #d33682;
+  --sol-violet:  #6c71c4;
+  --sol-blue:    #268bd2;
+  --sol-cyan:    #2aa198;
+  --sol-green:   #859900;
+
+  /* * Map to base palette - ANSI colors */
+  --color-black:   var(--sol-base02);
+  --color-red:     var(--sol-red);
+  --color-green:   var(--sol-green);
+  --color-yellow:  var(--sol-yellow);
+  --color-blue:    var(--sol-blue);
+  --color-magenta: var(--sol-magenta);
+  --color-cyan:    var(--sol-cyan);
+  --color-white:   var(--sol-base0);
+
+  /* * Bright variants */
+  --color-bright-black:   var(--sol-base01);
+  --color-bright-red:     var(--sol-orange);
+  --color-bright-green:   var(--sol-base1);
+  --color-bright-yellow:  var(--sol-orange);
+  --color-bright-blue:    var(--sol-violet);
+  --color-bright-magenta: var(--sol-violet);
+  --color-bright-cyan:    var(--sol-base1);
+  --color-bright-white:   var(--sol-base1);
+
+  /* * Surface scale (background hierarchy) */
+  --color-surface-0: #001e26;           /* deepest */
+  --color-surface-1: var(--sol-base03); /* base bg */
+  --color-surface-2: var(--sol-base02); /* elevated */
+  --color-surface-3: #0a4050;           /* higher */
+  --color-surface-4: #0d4d5a;           /* active */
+  --color-surface-5: var(--sol-base01); /* highest */
+
+  /* * Override specific semantics for solarized feel */
+  --accent: var(--sol-blue);
+  --accent-hover: var(--sol-cyan);
+  --lobby-color: var(--sol-blue);
+  --lobby-color-active: var(--sol-cyan);
+  --highlight-border: var(--sol-yellow);
+  --unread-marker: var(--sol-cyan);
+  --date-marker: var(--sol-base01);
+  --notice-color: var(--sol-cyan);
+  --action-color: var(--sol-orange);
+  --join-color: var(--sol-green);
+  --part-color: var(--sol-red);
+  
+  /* * Placeholder - base01 is solarized's "comments" color */
+  --placeholder: var(--sol-base01);
+}

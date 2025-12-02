@@ -259,6 +259,19 @@ body {
 	color: var(--body-color);
 }
 
+form.message-search input,
+#connect input,
+#settings input,
+#settings textarea,
+#settings select {
+	background: var(--background-light-color);
+	color: var(--body-color);
+}
+
+form.message-search input::placeholder {
+	color: rgba(131, 148, 150, 0.9);
+}
+
 #chat.colored-nicks .user.color-1,
 #chat.colored-nicks .user.color-17 {
 	color: #ef4657;
